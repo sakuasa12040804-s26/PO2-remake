@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#07111f">
+  <meta name="description" content="PROJECT ORBIT 2.0 - Deep Space Operations, a fictional spacecraft operations simulator.">
+  <title>PROJECT ORBIT 2.0 — DEEP SPACE OPERATIONS</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="ambient-grid" aria-hidden="true"></div>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">◉</div>
+        <div>
+          <p class="eyebrow">MISSION CONTROL SYSTEMS / SIMULATION ONLY</p>
+          <h1>PROJECT ORBIT <span>2.0</span></h1>
+          <p class="subtitle">DEEP SPACE OPERATIONS</p>
+        </div>
+      </div>
+      <div class="header-status">
+        <span class="live-dot" id="liveDot"></span>
+        <span id="headerState">STANDBY</span>
+        <span class="divider-v"></span>
+        <span id="modeLabel">NO MISSION SELECTED</span>
+      </div>
+    </header>
+
+    <section id="missionSelect" class="view">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">FLIGHT DIRECTOR CONSOLE</p>
+          <h2>Select an operation</h2>
+          <p class="muted">Choose a mission profile or enter continuous long-term operations.</p>
+        </div>
+        <div class="system-chip"><span class="chip-dot"></span> SYSTEM READY</div>
+      </div>
+      <div id="missionGrid" class="mission-grid"></div>
+      <article class="longterm-card">
+        <div class="orbit-art" aria-hidden="true"><span></span><i></i><b></b></div>
+        <div class="longterm-copy">
+          <p class="eyebrow">OPEN-ENDED FLIGHT MODE</p>
+          <h3>LONG-TERM OPERATIONS</h3>
+          <p class="muted">No mission countdown. Resource management, random incidents, and system survival remain active.</p>
+        </div>
+        <button id="startLongTerm" class="btn btn-primary">INITIATE LONG-TERM <span>↗</span></button>
+      </article>
+      <p class="fine-print">FICTIONAL LOCAL SIMULATION · NO SPACECRAFT, SATELLITE, OR EXTERNAL SYSTEM CONNECTION</p>
+    </section>
+
+    <section id="controlRoom" class="view hidden">
+      <div class="mission-strip">
+        <div>
+          <p class="eyebrow" id="missionCode">MISSION PROFILE</p>
+          <h2 id="missionTitle">—</h2>
+          <p id="missionObjective" class="muted">—</p>
+        </div>
+        <div class="mission-clock">
+          <span class="eyebrow" id="clockLabel">TIME REMAINING</span>
+          <strong id="missionClock">00:00</strong>
+          <small id="elapsedClock">ELAPSED 00:00</small>
+        </div>
+      </div>
+
+      <div class="objective-panel panel">
+        <div class="panel-heading">
+          <h3>MISSION OBJECTIVE</h3>
+          <span id="objectivePercent" class="mono accent">0%</span>
+        </div>
+        <div class="progress-track"><div id="objectiveBar" class="progress-fill"></div></div>
+        <div class="objective-bottom"><span id="objectiveName">Awaiting mission</span><span id="objectiveHint">SYSTEMS NOMINAL</span></div>
+      </div>
+
+      <div class="telemetry-grid">
+        <article class="metric-card" data-metric="power">
+          <div class="metric-top"><span class="metric-icon">ϟ</span><span class="metric-label">POWER</span><span id="powerState" class="metric-state">NOMINAL</span></div>
+          <div class="metric-value"><strong id="powerValue">100</strong><span>%</span></div>
+          <div class="metric-track"><div id="powerBar" class="metric-fill cyan"></div></div>
+          <p class="metric-foot">BUS OUTPUT <span id="powerFoot">STABLE</span></p>
+        </article>
+        <article class="metric-card" data-metric="temperature">
+          <div class="metric-top"><span class="metric-icon">♨</span><span class="metric-label">THERMAL</span><span id="temperatureState" class="metric-state">NOMINAL</span></div>
+          <div class="metric-value"><strong id="temperatureValue">35</strong><span>°C</span></div>
+          <div class="metric-track"><div id="temperatureBar" class="metric-fill amber"></div></div>
+          <p class="metric-foot">RADIATOR LOAD <span id="temperatureFoot">NORMAL</span></p>
+        </article>
+        <article class="metric-card" data-metric="comm">
+          <div class="metric-top"><span class="metric-icon">⌁</span><span class="metric-label">COMM LINK</span><span id="commState" class="metric-state">ONLINE</span></div>
+          <div class="metric-value"><strong id="commValue">80</strong><span>%</span></div>
+          <div class="metric-track"><div id="commBar" class="metric-fill blue"></div></div>
+          <p class="metric-foot">SIGNAL QUALITY <span id="commFoot">LOCKED</span></p>
+        </article>
+        <article class="metric-card" data-metric="fuel">
+          <div class="metric-top"><span class="metric-icon">◈</span><span class="metric-label">PROPELLANT</span><span id="fuelState" class="metric-state">NOMINAL</span></div>
+          <div class="metric-value"><strong id="fuelValue">100</strong><span>%</span></div>
+          <div class="metric-track"><div id="fuelBar" class="metric-fill violet"></div></div>
+          <p class="metric-foot">TANK RESERVE <span id="fuelFoot">AVAILABLE</span></p>
+        </article>
+      </div>
+
+      <div class="main-grid">
+        <section class="panel exploration-panel">
+          <div class="panel-heading"><h3>EXPLORATION TELEMETRY</h3><span class="tiny-label">LIVE FEED</span></div>
+          <div class="radar-layout">
+            <div class="radar" aria-label="Decorative radar visualization"><div class="radar-sweep"></div><span class="radar-ring r1"></span><span class="radar-ring r2"></span><span class="radar-ring r3"></span><i class="radar-target t1"></i><i class="radar-target t2"></i><i class="radar-target t3"></i><span class="radar-cross"></span></div>
+            <div class="exploration-stats">
+              <p class="eyebrow">PRIMARY TASK</p><h4 id="taskTitle">Survey target</h4>
+              <div class="stat-line"><span>SCAN RATE</span><strong id="scanRate">0.0 <small>%/s</small></strong></div>
+              <div class="stat-line"><span>ACTIVE SYSTEMS</span><strong id="activeSystems">03</strong></div>
+              <div class="stat-line"><span>EVENTS RECORDED</span><strong id="eventCount">000</strong></div>
+              <div class="status-note" id="systemNote">All monitored systems within operating range.</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel action-panel">
+          <div class="panel-heading"><h3>FLIGHT OPERATIONS</h3><span class="tiny-label">TACTICAL CONTROLS</span></div>
+          <div class="control-grid">
+            <button class="control-btn" data-action="scan"><span class="control-symbol">⌖</span><span><b>SCAN</b><small>Standard survey</small></span><kbd>+PROGRESS</kbd></button>
+            <button class="control-btn" data-action="highScan"><span class="control-symbol">✳</span><span><b>HIGH-POWER SCAN</b><small>High output / heat</small></span><kbd>FAST</kbd></button>
+            <button class="control-btn" data-action="cool"><span class="control-symbol">❄</span><span><b>COOLING</b><small>Thermal management</small></span><kbd id="coolingTag">READY</kbd></button>
+            <button class="control-btn" data-action="comm"><span class="control-symbol">⌁</span><span><b>COMMUNICATION</b><small id="commButtonSub">Link enabled</small></span><kbd id="commTag">ON</kbd></button>
+            <button class="control-btn" data-action="powerSave"><span class="control-symbol">ϟ</span><span><b>POWER MANAGEMENT</b><small id="powerSaveSub">Standard load</small></span><kbd id="powerSaveTag">OFF</kbd></button>
+            <button class="control-btn" data-action="solar"><span class="control-symbol">☼</span><span><b>SOLAR ARRAY</b><small id="solarSub">Charging enabled</small></span><kbd id="solarTag">ON</kbd></button>
+            <button class="control-btn" data-action="thrust"><span class="control-symbol">➤</span><span><b>THRUST / MANEUVER</b><small>Burn & course correction</small></span><kbd>FUEL</kbd></button>
+            <button class="control-btn" data-action="diagnostics"><span class="control-symbol">⌘</span><span><b>SYSTEM DIAGNOSTICS</b><small>Inspect anomalies</small></span><kbd>CHECK</kbd></button>
+          </div>
+          <div class="operation-footer">
+            <button id="pauseBtn" class="btn btn-secondary">Ⅱ PAUSE</button>
+            <button id="abortBtn" class="btn btn-danger">■ <span id="endButtonLabel">ABORT MISSION</span></button>
+          </div>
+        </section>
+
+        <section class="panel event-panel">
+          <div class="panel-heading"><h3>EVENT MONITOR</h3><span id="eventBadge" class="event-badge">NO ACTIVE ALERT</span></div>
+          <div id="activeEvents" class="active-events"><div class="empty-state"><span>◎</span><p>No active incidents detected.</p></div></div>
+        </section>
+
+        <section class="panel log-panel">
+          <div class="panel-heading"><h3>FLIGHT RECORDER</h3><div class="log-actions"><span id="logCount" class="tiny-label">0 ENTRIES</span><button id="copyLogBtn" class="text-btn">COPY LOG</button></div></div>
+          <div id="eventLog" class="event-log" aria-live="polite"></div>
+        </section>
+      </div>
+      <div id="pauseOverlay" class="pause-overlay hidden"><div class="pause-card"><span class="pause-icon">Ⅱ</span><h3>SIMULATION PAUSED</h3><p>Mission time and system updates are suspended.</p><button id="resumeOverlayBtn" class="btn btn-primary">RESUME OPERATIONS</button></div></div>
+    </section>
+
+    <section id="resultView" class="view hidden">
+      <div class="result-shell panel">
+        <div id="resultSymbol" class="result-symbol">✓</div>
+        <p class="eyebrow" id="resultEyebrow">MISSION REPORT</p>
+        <h2 id="resultTitle">MISSION SUCCESS</h2>
+        <p id="resultSummary" class="muted"></p>
+        <div id="resultStats" class="result-stats"></div>
+        <div class="result-actions"><button id="retryBtn" class="btn btn-primary">↻ RETRY OPERATION</button><button id="selectBtn" class="btn btn-secondary">MISSION SELECT</button></div>
+      </div>
+    </section>
+
+    <footer class="app-footer"><span>ORBITAL OPERATIONS FRAMEWORK <b>v2.0.0</b></span><span>SIMULATED TELEMETRY ONLY · LOCAL STORAGE OPTIONAL</span></footer>
+  </main>
+
+  <div id="confirmDialog" class="dialog-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="dialogTitle">
+    <div class="dialog-card"><p class="eyebrow">COMMAND CONFIRMATION</p><h3 id="dialogTitle">Confirm operation?</h3><p id="dialogMessage" class="muted">This action cannot be undone.</p><div class="dialog-actions"><button id="dialogCancel" class="btn btn-secondary">CANCEL</button><button id="dialogConfirm" class="btn btn-danger">CONFIRM</button></div></div>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
